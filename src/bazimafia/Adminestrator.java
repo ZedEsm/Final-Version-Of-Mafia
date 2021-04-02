@@ -310,6 +310,7 @@ public class Adminestrator {
                                     if(j.time_of_being_killed==true){
                                         System.out.println("Joker won!");
                                         flag_end_of_game=true;
+                                        System.exit(0);
                                     }
                             }
                         else{
