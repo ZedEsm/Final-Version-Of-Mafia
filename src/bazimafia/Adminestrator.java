@@ -8,6 +8,8 @@ public class Adminestrator {
     boolean Day_Or_Night;//agar day=true agar night=false
     int Day_Counter=0;
     int Night_Counter=0;
+
+    boolean night_vote=false;
     ArrayList Players = new ArrayList();
     String command ;
     boolean flag_end_of_game=false;
@@ -144,7 +146,14 @@ public class Adminestrator {
                                     bazikonan = bazikonan.trim();
                                     bazikon=bazikonan.split(" ");
 
+                                    if(bazikon[0].equals("get_game_state")){
+                                        
+                                          System.out.println(Get_Games_State());
+                                    }
+                                    else{
+                                  
                                     System.out.println(new Player().Vote(bazikon[0],bazikon[1]));
+                                    }
                                 }
                             }
                     }
@@ -380,13 +389,32 @@ public class Adminestrator {
                         
                             String bazikon[]=vorodi.split(" ");
                             ArrayList list=Players;
+                            if(bazikon[0].equals("get_game_state")){
+                                System.out.println(Get_Games_State());
+                            }
+                            else{
                             for (int i = 0; i < list.size(); i++) {
                                 Player p = (Player)list.get(i);
                                 if(p.Name.equals(bazikon[0])){
                                     if(p instanceof silencer){
+                                        
                                         silencer s1 = (silencer)p;
-                                        System.out.println(s1.Silent(i,bazikon[1]));
-                                        break;
+                                        if(s1.counter_silent_kardan==0){
+                                            System.out.println(s1.Silent(i,bazikon[1]));
+                                            break;
+                                        }
+                                        else{
+                                            mafia m1 = new mafia(bazikon[0]);
+                                            String c =m1.Vote_During_Night(i,bazikon[1]);
+
+                                            if (c.indexOf("->")==-1){
+                                                System.out.println(c);
+                                                break;
+                                            }
+                                            else{
+                                                res1+=c;
+                                            }
+                                        }
                                     }
                                     else if(p instanceof detective){
                                         detective d1 = (detective)p;
@@ -394,14 +422,17 @@ public class Adminestrator {
                                         break;
 
                                     }
-//                                    else if(p instanceof doctor){
-//                                        doctor d = (doctor)p;
-//                                        System.out.println(d.to_save(i,bazikon[1]));
-//
-//                                    }
+                                    else if(p instanceof doctor){
+                                        doctor d = (doctor)p;
+//                                 
+
+                                    }
+                                    
+                                 
                                     else if((p instanceof mafia)|| (p instanceof silencer) || (p instanceof godfather)){
                                         mafia m1 = new mafia(bazikon[0]);
                                         String c =m1.Vote_During_Night(i,bazikon[1]);
+                                       
                                         if (c.indexOf("->")==-1){
                                             System.out.println(c);
                                             break;
@@ -418,6 +449,7 @@ public class Adminestrator {
                                     }
                                 }
                             }
+                            }
                         }
                     }
 
@@ -426,8 +458,11 @@ public class Adminestrator {
     public void End_Night(){
 
                 String temp_res=res1.trim();
+                
+                night_vote=false;
                 String voters="";
                 while(temp_res.length()>0){
+                    night_vote=true;
                     int idx1 = temp_res.lastIndexOf("]");
   
                     int idx2 = temp_res.lastIndexOf("]",idx1-1);
@@ -448,8 +483,11 @@ public class Adminestrator {
                        ((Player)Players.get(current_index)).nigth_VoteCounter++;
                     }
                 }
-                mafia nm = new mafia("killer");
-                nm.kill();
+                if(night_vote==true){
+                    mafia nm = new mafia("killer");
+                    nm.kill();
+                }
+                
          
                 
                 
@@ -457,6 +495,7 @@ public class Adminestrator {
                 System.out.println("Day "+Day_Counter);
                 report();
                 init_day();
+              
                 
                 int number_of_mafias= mafia_counter+godfather_counter+silencer_counter;
                 int number_of_villagers=villager_counter+detective_counter+doctor_counter+bulletproof_counter;
@@ -470,6 +509,7 @@ public class Adminestrator {
                 }
                 
                     //kamel nist be safhe 7 highlight morajee shavad
+                      Day_Or_Night=true;
                 boolean flg = false;
                 String bazikon[];
                 Scanner scanner = new Scanner(System.in);
@@ -481,10 +521,17 @@ public class Adminestrator {
                             End_Vote();
                         }
                         else{
+                           
                             bazikonan = bazikonan.trim();
                             bazikon=bazikonan.split(" ");
 
+                            if(bazikon[0].equals("get_game_state")){
+                               System.out.println(Get_Games_State());
+                            }
+                            else{
+                              
                             System.out.println(new Player().Vote(bazikon[0],bazikon[1]));
+                           }
                         }
                 }
        
@@ -496,7 +543,7 @@ public class Adminestrator {
         return "Mafia = "+number_of_mafias+"\nVillager = "+number_of_villagers;
     }
     public  void init_day(){//meghdar dehi avalie be rooz
-        
+                      
                       for (int i = 0; i < Players.size(); i++) {
                         if(Players.get(i) instanceof mafia){
                             mafia obj=(mafia)Players.get(i);
@@ -504,6 +551,7 @@ public class Adminestrator {
                             obj.nigth_VoteCounter=0;
                             if(Day_Counter-obj.Silent_Day==2){
                               obj.SilentStatus=false;
+                       
                             }
 
                         }
@@ -588,8 +636,9 @@ public class Adminestrator {
                     System.out.println(obj.Name+" was killed");
                 }
                 if(obj.SilentStatus==true){
-                   
+                      if(Day_Counter-obj.Silent_Day==1){
                        System.out.println("Silenced "+obj.Name);
+                      }
                 }
           }
     }

@@ -20,18 +20,24 @@ public class Player {
     }
     public Player(){}
     public String Vote(String voter,String votee){
+      
         Adminestrator adm = Adminestrator.getInstance();
         ArrayList list = adm.Players;
         boolean flag=false;
+        
         for (int i = 0; i < list.size(); i++) {
             Player p = (Player)list.get(i);
             if(p.Name.equals(voter)){
                 flag=true;
+           
                 if(p.LiveStatus==false){
+               
                      return "voter already dead";
                 }
                 else{
+            
                     if(p.SilentStatus==true){
+                    
                         return "voter is silenced";
                     }
                 }
@@ -40,6 +46,7 @@ public class Player {
             
         }
         if(flag==false){
+            
            return "user not found";
         }
         flag=false;
@@ -47,8 +54,9 @@ public class Player {
             Player p = (Player)list.get(i);
             if(p.Name.equals(votee)){
                 flag=true;
+               
                 if(p.LiveStatus==false){
-                    
+                  
                    return "votee already dead";
                 }
              
@@ -57,7 +65,7 @@ public class Player {
             }
         }
         if(flag==false){
-           
+     
            return "user not found";
         }
       

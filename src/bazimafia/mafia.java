@@ -13,7 +13,8 @@ public class mafia extends Player {
            
             Adminestrator adm = Adminestrator.getInstance();
             ArrayList listmaf = adm.Players;
-            mafia m = (mafia)listmaf.get(index_mafia);
+         //   mafia m = (mafia)listmaf.get(index_mafia);
+            Player m = (Player)listmaf.get(index_mafia);
             if(m.LiveStatus==false){
                return " mafia(voter) is dead";  
             }
@@ -62,7 +63,10 @@ public class mafia extends Player {
                          System.out.println("nobody died");//chand nafaar ray yeksan dashtan
                          flag1=true;
                     }
+                    
                     else if(equalvote==2){
+                 
+                       if(adm.doctor_counter>0){
                         
                       int idx1=-1,idx2=-1;
                       for (int i = 0; i <listmaf.size(); i++){//ki bod ke max shod
@@ -180,7 +184,7 @@ public class mafia extends Player {
                                 }
                             } 
                         }
-                        else{//hich kodam ra nejat nemidahad
+                        else if(select==2){//hich kodam ra nejat nemidahad
                      
                            ((Player)listmaf.get(idx1)).LiveStatus=true;
                             if(!(((Player)listmaf.get(idx1)) instanceof bulletproof)){
@@ -201,16 +205,60 @@ public class mafia extends Player {
                             System.out.println("nobody died");
                         }
                     }
+                    }
                     
                     else{//max koshte shod ye nafar bayad koshte beshe
                         
                            ((Player)listmaf.get(index)).LiveStatus = true;
-                          
+                        
                             if(!(((Player)listmaf.get(index)) instanceof bulletproof)){
+                            
+                                if(adm.doctor_counter>0){
                                ((Player)listmaf.get(index)).tried_to_kill=true;
+                                       ((Player)listmaf.get(index)).LiveStatus = true;
+                                }
+                                else{
+                                     ((Player)listmaf.get(index)).LiveStatus = false;
+                                     if(((Player)listmaf.get(index)) instanceof mafia){
+                                    adm.mafia_counter--;
+                                }
+                                else if(((Player)listmaf.get(index)) instanceof godfather){
+                                    adm.godfather_counter--;
+                                }
+                                else if(((Player)listmaf.get(index)) instanceof silencer){
+                                    adm.silencer_counter--;
+                                }
+                                else if(((Player)listmaf.get(index)) instanceof villager){
+                                   adm.villager_counter--;
+                                }
+                                else if(((Player)listmaf.get(index)) instanceof detective){
+                                    adm.detective_counter--;
+                                }
+                                else if(((Player)listmaf.get(index)) instanceof doctor){
+                                    adm.doctor_counter--;
+                                }
+                            
+                                else if(((Player)listmaf.get(index)) instanceof Joker){
+                                    adm.Joker_counter--;
+                                }
+                                }
                             }
                             else{
-                             ((Player)listmaf.get(index)).tried_to_kill=false;
+                             
+                                if(adm.doctor_counter>0){
+                               
+                                ((Player)listmaf.get(index)).tried_to_kill=false;
+                                        ((bulletproof)listmaf.get(index)).Num_Of_Life--;
+                                }
+                                else{
+                                             
+                                ((bulletproof)listmaf.get(index)).Num_Of_Life--;
+                                if(((bulletproof)listmaf.get(index)).Num_Of_Life<=0){
+                                    ((bulletproof)listmaf.get(index)).LiveStatus=false;
+                                    adm.bulletproof_counter--;
+                                    
+                                }
+                                }
                             }
                          
                           
