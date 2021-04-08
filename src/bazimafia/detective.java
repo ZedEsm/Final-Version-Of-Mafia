@@ -39,7 +39,7 @@ public class detective extends Player{
                             counter_stelam++;
                              return "No";
                         }
-                        else if(p instanceof mafia){
+                        else if((p instanceof mafia) || (p instanceof silencer)){
                             counter_stelam++;
                             return "Yes";
                         }

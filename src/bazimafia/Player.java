@@ -24,6 +24,7 @@ public class Player {
         Adminestrator adm = Adminestrator.getInstance();
         ArrayList list = adm.Players;
         boolean flag=false;
+      
         
         for (int i = 0; i < list.size(); i++) {
             Player p = (Player)list.get(i);

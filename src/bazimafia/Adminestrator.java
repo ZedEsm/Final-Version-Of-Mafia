@@ -8,7 +8,8 @@ public class Adminestrator {
     boolean Day_Or_Night;//agar day=true agar night=false
     int Day_Counter=0;
     int Night_Counter=0;
-
+    int doctoridx=-1;
+    String nameofbeingsaved="";
     boolean night_vote=false;
     ArrayList Players = new ArrayList();
     String command ;
@@ -25,7 +26,7 @@ public class Adminestrator {
     String player_names[];
     String res1="";//natije ray giri mafia dar shab
     String roles_list[]={"Joker","detective","bulletproof","doctor","godfather","mafia","silencer","villager"};
-    boolean errorflag=false;//role nadaran
+    boolean errorflag=false;//role nadaran ya agar errory 
     int num_of_assign_role=0;
     boolean game_started=false;
     private static Adminestrator Instance = null;
@@ -129,19 +130,23 @@ public class Adminestrator {
                         }
                             System.out.println("\nReady? Set! Go.");
                             game_started=true;
+                      
                             init_day();
                             Day_Counter++;
                             Day_Or_Night=true;
                             System.out.println("Day "+Day_Counter);
                             boolean flg = false;
                               String bazikon[];
+                           
                               Scanner scanner = new Scanner(System.in);
+                              
                             while(flg==false){
                                 String bazikonan=scanner.nextLine();
                                 if(bazikonan.equals("end_vote")){
                                     flg=true;
                                     End_Vote();
                                 }
+                             
                                 else{
                                     bazikonan = bazikonan.trim();
                                     bazikon=bazikonan.split(" ");
@@ -149,16 +154,26 @@ public class Adminestrator {
                                     if(bazikon[0].equals("get_game_state")){
                                         
                                           System.out.println(Get_Games_State());
+                                       
                                     }
+//                                       if(command.startsWith("start_game")){
+//                                       System.out.println("game has already started");
+//                                    }
                                     else{
-                                  
-                                    System.out.println(new Player().Vote(bazikon[0],bazikon[1]));
+                                            if(bazikon[0].startsWith("start_game")){
+                                           
+                                             System.out.println("game has already started");
+                                            }
+                                            else{
+                                               System.out.println(new Player().Vote(bazikon[0],bazikon[1]));
+                                            }
                                     }
                                 }
                             }
                     }
                 }
             }
+               
             else{
                 System.out.println("game has already started");
             }
@@ -392,6 +407,9 @@ public class Adminestrator {
                             if(bazikon[0].equals("get_game_state")){
                                 System.out.println(Get_Games_State());
                             }
+                            else if(bazikon[0].equals("start_game")){
+                                System.out.println("game has already started");
+                            }
                             else{
                             for (int i = 0; i < list.size(); i++) {
                                 Player p = (Player)list.get(i);
@@ -424,8 +442,13 @@ public class Adminestrator {
                                     }
                                     else if(p instanceof doctor){
                                         doctor d = (doctor)p;
-//                                 
-
+                                        if(d.counter_save==0){
+                                            doctoridx=i;
+                                            nameofbeingsaved=bazikon[1];
+                                            d.counter_save=1;
+                                            break;
+                                        }
+                                   
                                     }
                                     
                                  
@@ -456,6 +479,7 @@ public class Adminestrator {
 //               
     }
     public void End_Night(){
+       
 
                 String temp_res=res1.trim();
                 
@@ -484,8 +508,9 @@ public class Adminestrator {
                     }
                 }
                 if(night_vote==true){
-                    mafia nm = new mafia("killer");
-                    nm.kill();
+                 doctor d1= ((doctor)Players.get(doctoridx));
+                  
+                 d1.Save(doctoridx,nameofbeingsaved);
                 }
                 
          
@@ -588,6 +613,7 @@ public class Adminestrator {
                             obj.counter_save=0;
                             obj.day_VoteCounter=0;
                             obj.nigth_VoteCounter=0;
+                            nameofbeingsaved="";
                             if(Day_Counter-obj.Silent_Day==2){
                               obj.SilentStatus=false;
                             }
